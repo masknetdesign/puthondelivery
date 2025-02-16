@@ -1,0 +1,86 @@
+{% extends 'pedidos/base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="mb-4">Finalizar Pedido</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" required>
+            </div>
+            <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="telefone" name="telefone" required>
+            </div>
+            <div class="mb-3">
+                <label for="cep" class="form-label">CEP</label>
+                <input type="text" class="form-control" id="cep" name="cep" required>
+            </div>
+            <div class="mb-3">
+                <label for="endereco" class="form-label">Endereço</label>
+                <input type="text" class="form-control" id="endereco" name="endereco" required>
+            </div>
+            <div class="mb-3">
+                <label for="numero" class="form-label">Número</label>
+                <input type="text" class="form-control" id="numero" name="numero" required>
+            </div>
+            <div class="mb-3">
+                <label for="complemento" class="form-label">Complemento</label>
+                <input type="text" class="form-control" id="complemento" name="complemento">
+            </div>
+            <div class="mb-3">
+                <label for="bairro" class="form-label">Bairro</label>
+                <input type="text" class="form-control" id="bairro" name="bairro" required>
+            </div>
+            <div class="mb-3">
+                <label for="cidade" class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="cidade" name="cidade" required>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <input type="text" class="form-control" id="estado" name="estado" required>
+            </div>
+            <div class="mb-3">
+                <h4>Resumo do Pedido</h4>
+                <ul class="list-group">
+                    {% for item in request.session.carrinho %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.nome }} ({{ item.tamanho }})
+                        <span>R$ {{ item.preco }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Confirmar Pedido</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const cep = document.querySelector("#cep")
+
+    cep.addEventListener('blur', (e) => {
+        const cepValue = cep.value.replace(/[^0-9]+/g, '');
+        if(cepValue.length != 8){
+            return;
+        }
+
+        fetch(`https://viacep.com.br/ws/${cepValue}/json/`)
+        .then( response => response.json())
+        .then( data => {
+            if(data.erro){
+                return;
+            }
+            document.querySelector("#endereco").value = data.logradouro;
+            document.querySelector("#complemento").value = data.complemento;
+            document.querySelector("#bairro").value = data.bairro;
+            document.querySelector("#cidade").value = data.localidade;
+            document.querySelector("#estado").value = data.uf;
+        });
+    })
+</script>
+{% endblock %}

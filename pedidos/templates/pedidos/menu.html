@@ -1,0 +1,55 @@
+{% extends 'pedidos/base.html' %}
+
+{% block title %}Menu{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Nosso Cardápio</h2>
+
+<div class="row mb-3">
+    <div class="col-12">
+        <form method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar pizza..." name="search" value="">
+                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+            </div>
+        </form>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="d-flex flex-row justify-content-center flex-wrap">
+            <a href="?category=" class="btn btn-sm btn-outline-secondary mb-2 mx-1">Todas</a>
+            {% for category in categories %}
+            <a href="?category={{ category.id }}" class="btn btn-sm btn-outline-secondary mb-2 mx-1">{{ category.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for pizza in pizzas %}
+    <div class="col">
+        <a href="{% url 'pedidos:pizza_detalhes' pizza.id %}" class="card-link">
+            <div class="card">
+                {% if pizza.image %}
+                    <img src="{{ pizza.image.url }}" class="card-img-top" alt="{{ pizza.nome }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #333; font-weight: bold;">{{ pizza.nome }}</h5>
+                    <p class="card-text">{{ pizza.ingredientes }}</p>
+                    <p class="card-text"><strong style="color: #05c02d;">A partir de R$ {{ pizza.preco }}</strong></p>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

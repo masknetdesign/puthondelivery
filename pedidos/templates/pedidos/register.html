@@ -1,0 +1,29 @@
+{% extends 'pedidos/base.html' %}
+
+{% block title %}Cadastrar{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Cadastrar</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="alert alert-danger">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+        <p>Já tem uma conta? <a href="{% url 'pedidos:login' %}">Entrar</a></p>
+    </div>
+</div>
+{% endblock %}
