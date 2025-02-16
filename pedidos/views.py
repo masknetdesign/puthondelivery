@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Pedido, Pizza, Cliente, Category
 from decimal import Decimal
+from django.urls import reverse_lazy
 
 def listar_pedidos(request):
     """View function to list all orders"""
@@ -160,33 +161,44 @@ def checkout(request):
         if not request.session.get('carrinho'):
             messages.error(request, 'Seu carrinho está vazio')
             return redirect('pedidos:carrinho')
-        
+
         nome = request.POST.get('nome')
         telefone = request.POST.get('telefone')
         endereco = request.POST.get('endereco')
-        
+
         # Create or get customer
         cliente, created = Cliente.objects.get_or_create(
             telefone=telefone,
             defaults={'nome': nome, 'endereco': endereco}
         )
-        
+
         # Create order
         pedido = Pedido.objects.create(
             cliente=cliente,
             status='Pendente'
         )
-        
+
         # Add pizzas to order
         for item in request.session['carrinho']:
             pizza = Pizza.objects.get(id=item['pizza_id'])
             pedido.pizzas.add(pizza)
-        
+
         # Clear cart
         request.session['carrinho'] = []
         request.session.modified = True
-        
+
         messages.success(request, 'Pedido realizado com sucesso!')
         return redirect('pedidos:menu')
-        
-    return render(request, 'pedidos/checkout.html')
+
+    return render(request, 'pedidos/checkout.html', {'user': request.user})
+
+from django.contrib.auth import logout
+from django.urls import reverse, reverse_lazy
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "Você foi desconectado.")
+    if request.user.is_staff:
+        return redirect(reverse_lazy('admin:index'))
+    else:
+        return redirect(reverse_lazy('pedidos:menu'))

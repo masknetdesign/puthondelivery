@@ -10,13 +10,13 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" required>
+                <input type="text" class="form-control" id="nome" name="nome" value="{{ user.username }}" required>
             </div>
             <div class="mb-3">
                 <label for="telefone" class="form-label">Telefone</label>
                 <input type="tel" class="form-control" id="telefone" name="telefone" required>
             </div>
-            <div class="mb-3">
+             <div class="mb-3">
                 <label for="cep" class="form-label">CEP</label>
                 <input type="text" class="form-control" id="cep" name="cep" required>
             </div>
@@ -82,5 +82,19 @@
             document.querySelector("#estado").value = data.uf;
         });
     })
+
+    const telefone = document.querySelector("#telefone");
+
+    telefone.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.slice(0, 11);
+        if (value.length > 0) {
+            value = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+        }
+        if (value.length > 9) {
+            value = value.substring(0, 10) + '-' + value.substring(10);
+        }
+        e.target.value = value;
+    });
 </script>
 {% endblock %}

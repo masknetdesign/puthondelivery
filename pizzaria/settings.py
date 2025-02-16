@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-fxf0%%c$j8hsm*$dem&@mh$4g@uruwx&*=ig39&=jrv@)yqe=r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pythondelivery.appspot.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -122,6 +122,9 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'pizzaria/static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
